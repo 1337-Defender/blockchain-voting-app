@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Vote - Blockchain Voting{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="md:col-span-2 card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-3xl mb-4">Cast Your Vote, {{ user_email.split('@')[0] }}!</h2>
+            {% if not has_voted %}
+                <form method="POST" action="{{ url_for('submit_vote') }}">
+                    <div class="form-control w-full mb-4">
+                        <label class="label">
+                            <span class="label-text text-lg">Select Your Candidate:</span>
+                        </label>
+                        <select name="candidate_choice" class="select select-primary w-full text-lg">
+                            <option disabled selected>Choose one...</option>
+                            {% for candidate_name in candidates %}
+                                <option value="{{ candidate_name }}">{{ candidate_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="card-actions justify-end">
+                        <button type="submit" class="btn btn-primary btn-lg">Submit Vote</button>
+                    </div>
+                </form>
+            {% else %}
+                <div role="alert" class="alert alert-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span>Thank you! Your vote has been recorded.</span>
+                </div>
+            {% endif %}
+
+            <div class="divider my-6"></div>
+
+            <h3 class="text-2xl font-semibold mb-3">Blockchain Actions</h3>
+            <div class="flex space-x-4">
+                 {% if pending_votes_count > 0 %}
+                    <a href="{{ url_for('mine_block_route') }}" class="btn btn-accent">Mine Pending Votes ({{ pending_votes_count }})</a>
+                {% else %}
+                    <button class="btn btn-disabled">No Votes to Mine</button>
+                {% endif %}
+                <a href="{{ url_for('get_chain_data') }}" target="_blank" class="btn btn-outline btn-info">View Blockchain (JSON)</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="md:col-span-1 card bg-base-100 shadow-xl">
+        <div class="card-body">
+            <h2 class="card-title text-3xl mb-4">Live Results</h2>
+            {% if results %}
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th class="text-lg">Candidate</th>
+                                <th class="text-lg">Votes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for candidate, count in results.items() %}
+                            <tr>
+                                <td class="text-md">{{ candidate }}</td>
+                                <td class="text-md font-bold">{{ count }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No results yet. Votes need to be cast and mined.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
