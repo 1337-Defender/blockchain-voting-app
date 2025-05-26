@@ -1,0 +1,9 @@
+version: '3.8'
+services:
+  voting_app_flask:
+    build: .
+    container_name: blockchain_voting_flask_tailwind
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
