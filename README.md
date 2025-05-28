@@ -89,5 +89,3 @@ The recommended way to run this project is using Docker Compose.
     ```bash
     docker-compose down
     ```
-
-## Project Structure
